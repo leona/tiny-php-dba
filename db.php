@@ -1,5 +1,5 @@
 <?php
-namespace LeonHardly\DB;
+namespace LeonHardly;
 
 class DB {
     
