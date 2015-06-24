@@ -1,7 +1,5 @@
 <?php
 
-namespace LeonHardly;
-
 class cache {
     
     private static $cache_store = array();

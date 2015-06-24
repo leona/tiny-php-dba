@@ -1,17 +1,22 @@
 <?php
-//namespace LeonHardly;
 
 class DB {
     
-    public $insert_id; // Last insert statement primary key;
-    private $table;
-    private $start;
     private $query;
     private $db;
     static $static_db;
     
     public function __construct($conf, $cache_object = null) {
         $this->db = new PDO("mysql:host={$conf['host']};dbname={$conf['db']}", $conf['user'], $conf['pass'], array( PDO::ATTR_PERSISTENT => true ));
+    }
+    
+    public static function query($query) {
+        if (!is_object(self::$static_db)) 
+            self::$static_db = new DB(config::core('database'));
+        
+        self::$static_db->query = self::$static_db->db->prepare($query);
+        
+        return self::$static_db;
     }
     
     public function fetchAll($return_type = PDO::FETCH_OBJ) {
@@ -33,15 +38,6 @@ class DB {
     }
     public function exec() {
         return $this->query->execute();
-    }
-    
-    public static function query($query) {
-        if (!is_object(self::$static_db)) 
-            self::$static_db = new DB(config::core('database'));
-        
-        self::$static_db->query = self::$static_db->db->prepare($query);
-        
-        return self::$static_db;
     }
     
     public function bind() {
@@ -66,16 +62,4 @@ class DB {
         }
         return $this;
     }
-    /*
-    public function debugOutput() {
-        $this->start = microtime(true);
-        
-        return $this;
-    }
-    
-    public function __destruct() {
-        if (!empty($this->start))
-            die(microtime(true) - $this->start);
-    }
-    */
 }
