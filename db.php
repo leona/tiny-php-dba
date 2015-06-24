@@ -26,6 +26,11 @@ class DB {
         return $this->query->fetch($return_type);
     }
     
+    public function pluck() {
+        $this->exec();
+        
+        return $this->query->fetchColumn();
+    }
     public function exec() {
         return $this->query->execute();
     }
@@ -39,7 +44,9 @@ class DB {
         return self::$static_db;
     }
     
-    public function bind($values) {
+    public function bind() {
+        $values = func_get_args();
+
         foreach($values as $key => $value) {
             switch(true) {
                 case is_int($value):
@@ -55,7 +62,7 @@ class DB {
                     $type = PDO::PARAM_STR;
             }
             
-            $this->stmt->bindValue($key + 1, $value, $type);
+            $this->query->bindValue($key + 1, $value, $type);
         }
         return $this;
     }
