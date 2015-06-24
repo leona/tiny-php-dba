@@ -14,12 +14,16 @@ class DB {
         $this->db = new PDO("mysql:host={$conf['host']};dbname={$conf['db']}", $conf['user'], $conf['pass'], array( PDO::ATTR_PERSISTENT => true ));
     }
     
-    public function fetchAll() {
-        return $this->query->execute()->fetchAll();
+    public function fetchAll($return_type = PDO::FETCH_OBJ) {
+        $this->exec();
+        
+        return $this->query->fetchAll($return_type);
     }
 
-    public function fetch() {
-        return $this->query->execute()->fetch();
+    public function fetch($return_type = PDO::FETCH_OBJ) {
+        $this->exec();
+        
+        return $this->query->fetch($return_type);
     }
     
     public function exec() {
@@ -27,7 +31,7 @@ class DB {
     }
     
     public static function query($query) {
-        if (empty(self::$static_db)) 
+        if (!is_object(self::$static_db)) 
             self::$static_db = new DB(config::core('database'));
         
         self::$static_db->query = self::$static_db->db->prepare($query);
@@ -55,22 +59,7 @@ class DB {
         }
         return $this;
     }
-    
-    
     /*
-    public static function table($table) {
-        if (empty(self::$db)) 
-            self::$db = new DB(config::core('database'));
-        
-        return self::$db->setTable($table);
-    }
-    
-    private function setTable($table) {
-        $this->table = $table;
-        
-        return $this;
-    }
-    */
     public function debugOutput() {
         $this->start = microtime(true);
         
@@ -81,4 +70,5 @@ class DB {
         if (!empty($this->start))
             die(microtime(true) - $this->start);
     }
+    */
 }
